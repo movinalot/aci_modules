@@ -1,0 +1,7 @@
+{
+    "ANSIBLE_MODULE_ARGS": {
+        "option_1": "option 1",
+        "option_2": "option 2",
+        "state": "present"
+    }
+}
