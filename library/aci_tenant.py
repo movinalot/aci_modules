@@ -54,6 +54,7 @@ RETURNS = """
 
 import json
 import requests
+requests.packages.urllib3.disable_warnings()
 from ansible.module_utils.basic import AnsibleModule
 
 HTTP_HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
@@ -71,7 +72,7 @@ def http_actions(http_method, http_url, http_data, http_resource):
             headers=HTTP_HEADERS,
             verify=False,
         )
-        print(response.text)
+        #print(response.text)
 
     if http_method == "POST":
         response = requests.request(
@@ -81,7 +82,7 @@ def http_actions(http_method, http_url, http_data, http_resource):
             headers=HTTP_HEADERS,
             verify=False,
         )
-        print(response.text)
+        #print(response.text)
 
     if http_method == "DELETE":
         response = requests.request(
@@ -90,7 +91,7 @@ def http_actions(http_method, http_url, http_data, http_resource):
             headers=HTTP_HEADERS,
             verify=False,
         )
-        print(response.text)
+        #print(response.text)
 
     return response.text
 
