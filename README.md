@@ -1,6 +1,3 @@
-# aci_modules
-NetDevOps Live Ansible ACI Modules
-
 # NetDevOps Live! Better Ansible Network Automation with Roles and Custom Modules
 Ansible is an amazing open source tool for getting started with network configuration management. Have you ever noticed how big an complicated your playbooks can get for even basic network configurations? Or have you found something you wanted or needed to do that wasn't included in a module? Or, gasp, a module that didn't quite work as expected?
 
@@ -28,7 +25,7 @@ For guided learning of Ansbile and Ansible with ACI, these DevNet Learning Lab M
 
 The code in this repository was tested and run with the following software versions
 
-- python 3.7
+- python 3.7.3
 - ansible 2.7.10
 - pylint 2.3.1
 - requests 2.21.0
