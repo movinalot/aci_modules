@@ -1,0 +1,20 @@
+galaxy_info:
+  author: John McDonoguh
+  description: Create ACI Tenant Networks
+  company: Cisco
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: ACI
+    versions:
+    - all
+
+  galaxy_tags:
+    - cisco
+    - aci
+    - network
+
+dependencies: []

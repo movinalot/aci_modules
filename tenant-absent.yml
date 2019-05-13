@@ -20,19 +20,10 @@
         username: "{{ username }}"
         password: "{{ password }}"
 
-  - name: Create/Update ACI Tenant
+  - name: Remove ACI Tenant
     my_aci_tenant:
       <<: *login_info
       name : "{{ item.tenant }}"
-      descr : "{{ item.descr }}"
-      state : present
-    loop:
-      "{{ tenants }}"
-
-  - name: Add Networking
-    include_role:
-      name: my_aci_role
-    vars:
-      tenant: "{{ item.tenant }}"
+      state : absent
     loop:
       "{{ tenants }}"

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# pylint: disable=wrong-import-position, missing-docstring, global-statement
+# pylint: disable=wrong-import-position, missing-docstring, global-statement, no-member
 
 DOCUMENTATION = '''
 ---
@@ -62,8 +62,7 @@ changed_state:
 
 import json
 import requests
-import urllib3
-urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
 
 from ansible.module_utils.basic import AnsibleModule
 
