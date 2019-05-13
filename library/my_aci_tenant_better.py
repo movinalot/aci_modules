@@ -61,8 +61,17 @@ changed_state:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.aci_util import aci_login, aci_logout, aci_query, aci_delete, aci_update
-#from aci_util import aci_login, aci_logout, aci_query, aci_delete, aci_update
+
+try:
+    from ansible.module_utils.aci_util import (
+        aci_login, aci_logout, aci_query, aci_delete, aci_update
+    )
+except ModuleNotFoundError:
+    import sys
+    sys.path.append("..")
+    from module_utils.aci_util import (
+        aci_login, aci_logout, aci_query, aci_delete, aci_update
+    )
 
 
 def main():
