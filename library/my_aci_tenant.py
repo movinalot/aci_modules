@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
-DOCUMENTATION = """
+# pylint: disable=wrong-import-position, missing-docstring, global-statement
+
+DOCUMENTATION = '''
 ---
-module: aci_tenant
+module: my_aci_tenant
 author:  John McDonough (@movinalot)
 short_description: Manage and ACI Tenant
 description:
@@ -19,11 +21,11 @@ options:
             - Whether the ACI Tenant should exist or not.
         default: present
         choices: ['present', 'absent']
-"""
+'''
 
-EXAMPLES = """
+EXAMPLES = '''
 - name: Ensure ACI Tenant is present
-  aci_tenant:
+  my_aci_tenant:
     hostname: apic_host
     username: apic_user
     password: apic_pass
@@ -32,7 +34,7 @@ EXAMPLES = """
     state: present
 
 - name: Ensure ACI Tenant is present and/or update
-  aci_tenant:
+  my_aci_tenant:
     hostname: apic_host
     username: apic_user
     password: apic_pass
@@ -41,26 +43,33 @@ EXAMPLES = """
     state: present
 
 - name: Ensure ACI Tenant is absent
-  aci_tenant:
+  my_aci_tenant:
     hostname: apic_host
     username: apic_user
     password: apic_pass
     name: TenantX
     state: absent
-"""
+'''
 
-RETURNS = """
-"""
+RETURN = '''
+original_state:
+    description: The original state of the param that was passed in
+    type: str
+changed_state:
+    description: The output state that the module generates
+    type: str
+'''
 
 import json
 import requests
-requests.packages.urllib3.disable_warnings()
+import urllib3
+urllib3.disable_warnings()
+
 from ansible.module_utils.basic import AnsibleModule
 
 HTTP_HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
 
 APIC_TOKEN = ""
-
 
 def http_actions(http_method, http_url, http_data, http_resource):
     """ interact with aci REST api """
@@ -150,6 +159,7 @@ def aci_delete(aci_hostname, aci_resource):
 def main():
     """ Process the module """
 
+    # Manage the parameters
     module = AnsibleModule(
         argument_spec=dict(
             hostname=dict(type="str", required=True),
@@ -163,6 +173,17 @@ def main():
         supports_check_mode=True,
     )
 
+    # Manage the result, assume no changes.
+    result = dict(
+        changed=False,
+        original_state='',
+        changed_state=''
+    )
+
+    # Set the requested state
+    requested_state = module.params["state"]
+
+    # assign parameters to local variables
     aci_hostname = module.params["hostname"]
     aci_username = module.params["username"]
     aci_password = module.params["password"]
@@ -173,10 +194,7 @@ def main():
     if module.params["descr"] is not None:
         aci_tenant_descr = module.params["descr"]
 
-    requested_state = module.params["state"]
-
     is_descr_diff = False
-    changed = False
 
     aci_login(aci_hostname, aci_username, aci_password)
 
@@ -192,14 +210,14 @@ def main():
                                         ["fvTenant"]["attributes"]
                                         ["descr"]):
                     is_descr_diff = True
-                    changed = True
+                    result['changed'] = True
         else:
-            changed = True
+            result['changed'] = True
     else:
         if requested_state == "present":
-            changed = True
+            result['changed'] = True
 
-    if changed and not module.check_mode:
+    if result['changed'] and not module.check_mode:
         if requested_state == "present":
             tenant_payload = {
                 "fvTenant": {
@@ -217,7 +235,8 @@ def main():
 
     aci_logout(aci_hostname)
 
-    module.exit_json(changed=changed)
+    # exit with change state indicated and return values
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@
         password: "{{ password }}"
 
   - name: Create/Update ACI Tenant
-    aci_tenant:
+    my_aci_tenant:
       <<: *login_info
       name : TenantA
       descr : This is tenant A
