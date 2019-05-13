@@ -1,0 +1,38 @@
+---
+#
+#
+# Author: John McDonough (jomcdono@cisco.com)
+#         Cisco Systems, Inc.
+#
+
+- hosts: aci
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: Test that we have an ACI hostname, ACI username, and ACI password
+    fail:
+      msg: 'Please define the following variables: hostname, username and password.'
+    when: hostname is not defined or username is not defined or password is not defined
+    vars:
+      login_info: &login_info
+        hostname: "{{ hostname }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+
+  - name: Create/Update ACI Tenant
+    my_aci_tenant_better:
+      <<: *login_info
+      name : "{{ item.tenant }}"
+      descr : "{{ item.descr }}"
+      state : present
+    loop:
+      "{{ tenants }}"
+
+  - name: Add Networking
+    include_role:
+      name: my_aci_role
+    vars:
+      tenant: "{{ item.tenant }}"
+    loop:
+      "{{ tenants }}"
