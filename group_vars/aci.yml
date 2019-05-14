@@ -1,3 +1,3 @@
 tenants:
-  - { tenant: 'ATenant1', descr: 'This is tenant 1' }
-  - { tenant: 'ATenant2', descr: 'This is tenant 2' }
+  - { tenant: 'A-Tenant1', descr: 'This is tenant 1' }
+  - { tenant: 'A-Tenant2', descr: 'This is tenant 2' }

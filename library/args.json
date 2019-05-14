@@ -3,8 +3,8 @@
         "hostname": "sandboxapicdc.cisco.com",
         "username": "admin",
         "password": "ciscopsdt",
-        "name": "TenantA",
-        "descr": "This is tenant A",
+        "name": "A-Tenant1",
+        "descr": "This is tenant 1",
         "state": "present"
     }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-# pylint: disable=wrong-import-position, missing-docstring, no-name-in-module, import-error
+# pylint: disable=wrong-import-position, missing-docstring
+# pylint: disable=no-name-in-module, import-error, too-many-branches
 
 DOCUMENTATION = '''
 ---
@@ -112,22 +113,29 @@ def main():
     if module.params["descr"] is not None:
         aci_tenant_descr = module.params["descr"]
 
-    is_descr_diff = False
-
     aci_login(aci_hostname, aci_username, aci_password)
 
     aci_query_response = aci_query(
         aci_hostname, "node/mo/uni/tn-" + aci_tenant_name + ".json"
     )
 
+    # Assume object does not exist
+    exists = False
+
+    # Set potential changed properties to None
+    cur_aci_tenant_descr = None
+
     if aci_query_response["totalCount"] == "1":
+        exists = True
+        cur_aci_tenant_descr = (aci_query_response
+                                ["imdata"][0]
+                                ["fvTenant"]["attributes"]
+                                ["descr"])
+
+    if exists:
         if requested_state == "present":
-            if aci_tenant_descr:
-                if aci_tenant_descr != (aci_query_response
-                                        ["imdata"][0]
-                                        ["fvTenant"]["attributes"]
-                                        ["descr"]):
-                    is_descr_diff = True
+            if aci_tenant_descr is not None:
+                if aci_tenant_descr != cur_aci_tenant_descr:
                     result['changed'] = True
         else:
             result['changed'] = True
@@ -144,8 +152,9 @@ def main():
                     }
                 }
             }
-            if is_descr_diff:
-                tenant_payload["fvTenant"]["attributes"]["descr"] = aci_tenant_descr
+            if aci_tenant_descr is not None:
+                if aci_tenant_descr != cur_aci_tenant_descr:
+                    tenant_payload["fvTenant"]["attributes"]["descr"] = aci_tenant_descr
 
             aci_update(aci_hostname, tenant_payload, "node/mo/uni.json")
         else:
